@@ -83,6 +83,14 @@
                             </li>
 
                             <li class="list-group-item">
+                                <a href="{{route('posts')}}">All Posts</a>
+                            </li>
+
+                            <li class="list-group-item">
+                                <a href="{{route('posts.trashed')}}">All Trashed Posts</a>
+                            </li>
+
+                            <li class="list-group-item">
                                 <a href="{{route('post.create')}}">Create New Post</a>
                             </li>
 
@@ -113,6 +121,9 @@
     <script>
         @if(Session::has('success'))
             toastr.success("{{Session::get('success')}}")
+        @endif
+        @if(Session::has('info'))
+            toastr.success("{{Session::get('info')}}")
         @endif
     </script>
 </body>
