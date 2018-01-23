@@ -70,7 +70,7 @@ class PostsController extends Controller
 
         Session::flash('success','Post created successfully.');
 
-        return redirect()->back();
+        return redirect()->route('posts');
     }
 
     /**
@@ -92,7 +92,11 @@ class PostsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::find($id);
+
+        $categories = Category::all();
+
+        return view('admin.posts.edit', compact('post','categories'));
     }
 
     /**
@@ -104,7 +108,35 @@ class PostsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+            'category_id' => 'required'
+        ]);
+
+        $post = Post::find($id);
+
+        if($request->hasFile('featured'))
+        {
+            $featured = $request->featured;
+
+            $featured_new_name = time().$featured->getCLientOriginalName();
+
+            $featured->move('uploads/posts', $featured_new_name);
+
+            $post->featured = 'uploads/posts/'.$featured_new_name;
+        }
+
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->category_id = $request->category_id;
+
+        $post->save();
+
+        Session::flash('success','Post updated successfully.');
+
+        return redirect()->route('posts');
+
     }
 
     /**
@@ -150,6 +182,7 @@ class PostsController extends Controller
 
         Session::flash('success','Post restored sucessfully.');
 
-        return redirect()->route('posts');
+        return redirect()->back();
     }
+
 }
